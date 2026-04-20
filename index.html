@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SafeRoute</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>SafeRoute</h1>
+  <p>Find the safest evacuation path.</p>
+
+  <label for="start">Start:</label>
+  <select id="start">
+    <option value="Gaza">Gaza</option>
+    <option value="Deir al-Balah">Deir al-Balah</option>
+    <option value="Khan Younis">Khan Younis</option>
+    <option value="Rafah">Rafah</option>
+    <option value="Border Exit">Border Exit</option>
+  </select>
+
+  <label for="end">Destination:</label>
+  <select id="end">
+    <option value="Border Exit">Border Exit</option>
+    <option value="Rafah">Rafah</option>
+    <option value="Khan Younis">Khan Younis</option>
+    <option value="Deir al-Balah">Deir al-Balah</option>
+    <option value="Gaza">Gaza</option>
+  </select>
+
+  <button onclick="findRoute()">Find Safest Route</button>
+
+  <div id="output"></div>
+
+  <script src="graphData.js"></script>
+  <script src="dijkstra.js"></script>
+  <script src="astar.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

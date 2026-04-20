@@ -1,0 +1,24 @@
+Test Case 1:
+Start: Gaza
+End: Border Exit
+Expected Path:
+Gaza → Deir al-Balah → Khan Younis → Rafah → Border Exit
+Total Risk: 10
+
+---
+
+Test Case 2:
+Start: Gaza
+End: Rafah
+Expected Path:
+Gaza → Deir al-Balah → Khan Younis → Rafah
+Total Risk: 9
+
+---
+
+Test Case 3 (Direct vs Safer):
+Gaza → Khan Younis = 6
+Gaza → Deir al-Balah → Khan Younis = 3 + 2 = 5
+
+Expected:
+Algorithm chooses safer indirect route (5 instead of 6)
