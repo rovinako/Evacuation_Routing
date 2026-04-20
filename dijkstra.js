@@ -46,6 +46,7 @@ function dijkstra(graph, start, end) {
   
     return {
       path,
-      totalRisk: distances[end]
+      totalRisk: distances[end],
+      visitedCount: visited.size
     };
   }

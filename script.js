@@ -1,11 +1,13 @@
-function findRoute() {
-    const start = document.getElementById("start").value;
-    const end = document.getElementById("end").value;
+function compareAlgorithms(start, end) {
+    const dijkstraResult = dijkstra(graph, start, end);
+    const astarResult = astar(graph, positions, start, end);
   
-    const result = dijkstra(graph, start, end);
+    console.log("Comparing route from", start, "to", end);
+    console.log("Dijkstra:", dijkstraResult);
+    console.log("A*:", astarResult);
   
-    document.getElementById("output").innerHTML = `
-      <p><strong>Safest Path:</strong> ${result.path.join(" → ")}</p>
-      <p><strong>Total Risk:</strong> ${result.totalRisk}</p>
-    `;
+    return {
+      dijkstra: dijkstraResult,
+      astar: astarResult
+    };
   }

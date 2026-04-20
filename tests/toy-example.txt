@@ -1,24 +1,29 @@
-Test Case 1:
+Test Case 1
 Start: Gaza
 End: Border Exit
-Expected Path:
-Gaza → Deir al-Balah → Khan Younis → Rafah → Border Exit
-Total Risk: 10
 
----
+Expected safest path:
+Gaza -> Deir al-Balah -> Khan Younis -> Rafah -> Border Exit
 
-Test Case 2:
+Expected total risk:
+10
+
+Both Dijkstra and A* should return the same optimal result.
+
+--------------------------------------
+
+Test Case 2
 Start: Gaza
 End: Rafah
-Expected Path:
-Gaza → Deir al-Balah → Khan Younis → Rafah
-Total Risk: 9
 
----
+Possible route 1:
+Gaza -> Khan Younis -> Rafah = 6 + 4 = 10
 
-Test Case 3 (Direct vs Safer):
-Gaza → Khan Younis = 6
-Gaza → Deir al-Balah → Khan Younis = 3 + 2 = 5
+Possible route 2:
+Gaza -> Deir al-Balah -> Khan Younis -> Rafah = 3 + 2 + 4 = 9
 
-Expected:
-Algorithm chooses safer indirect route (5 instead of 6)
+Expected safest path:
+Gaza -> Deir al-Balah -> Khan Younis -> Rafah
+
+Expected total risk:
+9

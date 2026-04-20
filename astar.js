@@ -7,6 +7,7 @@ function heuristic(positions, node, end) {
   function astar(graph, positions, start, end) {
     const openSet = [start];
     const cameFrom = {};
+    const visited = new Set();
   
     const gScore = {};
     const fScore = {};
@@ -28,6 +29,8 @@ function heuristic(positions, node, end) {
         }
       }
   
+      visited.add(current);
+  
       if (current === end) {
         const path = [];
         let temp = end;
@@ -39,7 +42,8 @@ function heuristic(positions, node, end) {
   
         return {
           path,
-          totalRisk: gScore[end]
+          totalRisk: gScore[end],
+          visitedCount: visited.size
         };
       }
   
@@ -63,6 +67,7 @@ function heuristic(positions, node, end) {
   
     return {
       path: [],
-      totalRisk: Infinity
+      totalRisk: Infinity,
+      visitedCount: visited.size
     };
   }
