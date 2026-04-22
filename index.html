@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SafeRoute</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -11,20 +12,36 @@
 
   <label for="start">Start:</label>
   <select id="start">
-    <option value="Gaza">Gaza</option>
+    <option value="Gaza City">Gaza City</option>
+    <option value="Jabalia">Jabalia</option>
+    <option value="Beit Lahia">Beit Lahia</option>
+    <option value="Beit Hanoun">Beit Hanoun</option>
+    <option value="Nuseirat">Nuseirat</option>
+    <option value="Bureij">Bureij</option>
     <option value="Deir al-Balah">Deir al-Balah</option>
     <option value="Khan Younis">Khan Younis</option>
     <option value="Rafah">Rafah</option>
+    <option value="Shelter A">Shelter A</option>
+    <option value="Shelter B">Shelter B</option>
+    <option value="Medical Point">Medical Point</option>
     <option value="Border Exit">Border Exit</option>
   </select>
 
   <label for="end">Destination:</label>
   <select id="end">
     <option value="Border Exit">Border Exit</option>
+    <option value="Shelter A">Shelter A</option>
+    <option value="Shelter B">Shelter B</option>
+    <option value="Medical Point">Medical Point</option>
     <option value="Rafah">Rafah</option>
     <option value="Khan Younis">Khan Younis</option>
     <option value="Deir al-Balah">Deir al-Balah</option>
-    <option value="Gaza">Gaza</option>
+    <option value="Bureij">Bureij</option>
+    <option value="Nuseirat">Nuseirat</option>
+    <option value="Beit Hanoun">Beit Hanoun</option>
+    <option value="Beit Lahia">Beit Lahia</option>
+    <option value="Jabalia">Jabalia</option>
+    <option value="Gaza City">Gaza City</option>
   </select>
 
   <button onclick="findRoute()">Find Safest Route</button>
@@ -32,6 +49,7 @@
   <div id="output"></div>
 
   <script src="graphData.js"></script>
+  <script src="costUtils.js"></script>
   <script src="dijkstra.js"></script>
   <script src="astar.js"></script>
   <script src="script.js"></script>

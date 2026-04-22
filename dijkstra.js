@@ -1,4 +1,4 @@
-function dijkstra(graph, start, end) {
+function dijkstra(graph, start, end, mode = "safest") {
     const distances = {};
     const previous = {};
     const visited = new Set();
@@ -27,10 +27,11 @@ function dijkstra(graph, start, end) {
       visited.add(currentNode);
   
       for (const neighbor of graph[currentNode]) {
-        const newRisk = distances[currentNode] + neighbor.risk;
+        const edgeCost = getEdgeCost(neighbor, mode);
+        const newCost = distances[currentNode] + edgeCost;
   
-        if (newRisk < distances[neighbor.node]) {
-          distances[neighbor.node] = newRisk;
+        if (newCost < distances[neighbor.node]) {
+          distances[neighbor.node] = newCost;
           previous[neighbor.node] = currentNode;
         }
       }
@@ -46,7 +47,8 @@ function dijkstra(graph, start, end) {
   
     return {
       path,
-      totalRisk: distances[end],
-      visitedCount: visited.size
+      totalCost: distances[end],
+      visitedCount: visited.size,
+      mode
     };
   }
