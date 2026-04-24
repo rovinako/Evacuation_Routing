@@ -1,8 +1,15 @@
 function heuristic(positions, node, end) {
-    const dx = positions[node].x - positions[end].x;
-    const dy = positions[node].y - positions[end].y;
-    return Math.sqrt(dx * dx + dy * dy);
-  }
+  const dx = positions[node].x - positions[end].x;
+  const dy = positions[node].y - positions[end].y;
+
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  // Scale distance so the heuristic is closer to the same range
+  // as our edge cost, which includes danger, time, congestion, and road condition.
+  const heuristicScale = 2;
+
+  return distance * heuristicScale;
+}
   
   function astar(graph, positions, start, end, mode = "safest") {
     const openSet = [start];
