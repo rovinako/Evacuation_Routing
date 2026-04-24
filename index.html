@@ -1,57 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SafeRoute</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SafeRoute Evacuation Routing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>SafeRoute</h1>
-  <p>Find the safest evacuation path.</p>
 
-  <label for="start">Start:</label>
-  <select id="start">
-    <option value="Gaza City">Gaza City</option>
-    <option value="Jabalia">Jabalia</option>
-    <option value="Beit Lahia">Beit Lahia</option>
-    <option value="Beit Hanoun">Beit Hanoun</option>
-    <option value="Nuseirat">Nuseirat</option>
-    <option value="Bureij">Bureij</option>
-    <option value="Deir al-Balah">Deir al-Balah</option>
-    <option value="Khan Younis">Khan Younis</option>
-    <option value="Rafah">Rafah</option>
-    <option value="Shelter A">Shelter A</option>
-    <option value="Shelter B">Shelter B</option>
-    <option value="Medical Point">Medical Point</option>
-    <option value="Border Exit">Border Exit</option>
-  </select>
+<div class="app">
 
-  <label for="end">Destination:</label>
-  <select id="end">
-    <option value="Border Exit">Border Exit</option>
-    <option value="Shelter A">Shelter A</option>
-    <option value="Shelter B">Shelter B</option>
-    <option value="Medical Point">Medical Point</option>
-    <option value="Rafah">Rafah</option>
-    <option value="Khan Younis">Khan Younis</option>
-    <option value="Deir al-Balah">Deir al-Balah</option>
-    <option value="Bureij">Bureij</option>
-    <option value="Nuseirat">Nuseirat</option>
-    <option value="Beit Hanoun">Beit Hanoun</option>
-    <option value="Beit Lahia">Beit Lahia</option>
-    <option value="Jabalia">Jabalia</option>
-    <option value="Gaza City">Gaza City</option>
-  </select>
+  <!-- ── HEADER ── -->
+  <header>
+    <div class="logo">
+      <div class="logo-hex">🛡</div>
+      <div>
+        <div class="logo-text">Safe<em>Route</em></div>
+        <div class="logo-sub">Evacuation Routing System</div>
+      </div>
+    </div>
+    <div class="hdr-center">
+      <div class="pill-dot"></div>
+      <div class="pill">SYSTEM ACTIVE</div>
+    </div>
+    <div class="hdr-right">
+      Click node → set start<br>
+      Shift+click → set destination
+    </div>
+  </header>
 
-  <button onclick="findRoute()">Find Safest Route</button>
+  <div class="body">
 
-  <div id="output"></div>
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
 
-  <script src="graphData.js"></script>
-  <script src="costUtils.js"></script>
-  <script src="dijkstra.js"></script>
-  <script src="astar.js"></script>
-  <script src="script.js"></script>
+      <!-- Route Selection -->
+      <div class="sec">
+        <div class="sec-lbl">Route Selection</div>
+        <div class="field">
+          <label>Start Location</label>
+          <div class="sw">
+            <select id="ss" onchange="redraw()"></select>
+            <span class="arr">▾</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Destination</label>
+          <div class="sw">
+            <select id="es" onchange="redraw()"></select>
+            <span class="arr">▾</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Routing Mode -->
+      <div class="sec">
+        <div class="sec-lbl">Routing Mode</div>
+        <div class="mode-grid">
+          <button class="mode-btn active" onclick="setMode('safest',this)">
+            <span class="ico"></span>Safest
+          </button>
+          <button class="mode-btn" onclick="setMode('fastest',this)">
+            <span class="ico"></span>Fastest
+          </button>
+          <button class="mode-btn" onclick="setMode('balanced',this)">
+            <span class="ico"></span>Balanced
+          </button>
+        </div>
+      </div>
+
+      <!-- Algorithm -->
+      <div class="sec">
+        <div class="sec-lbl">Algorithm</div>
+        <div class="algo-grid">
+          <button class="algo-btn active" onclick="setAlgo('dijkstra',this)">Dijkstra</button>
+          <button class="algo-btn" onclick="setAlgo('astar',this)">A* Search</button>
+        </div>
+      </div>
+
+      <!-- Display Options -->
+      <div class="sec">
+        <div class="sec-lbl">Display Options</div>
+        <label class="chk-row">
+          <input type="checkbox" id="chkB" onchange="redraw()">
+          Show blocked road
+        </label>
+        <label class="chk-row">
+          <input type="checkbox" id="chkC" onchange="maybeCompare()">
+          Compare algorithms
+        </label>
+        <label class="chk-row">
+          <input type="checkbox" id="chkE" checked onchange="redraw()">
+          Show edge costs
+        </label>
+      </div>
+
+      <!-- Actions -->
+      <div class="sec">
+        <div class="btn-row">
+          <button class="find-btn" onclick="findRoute()">⟶ &nbsp;Find Route</button>
+          <button class="clear-btn" onclick="clearRoute()" title="Clear route">✕</button>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="results-pane" id="results">
+        <div class="empty-state">
+          Select start + destination<br>then press Find Route
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ── MAP ── -->
+    <div id="mapArea">
+      <canvas id="mapCanvas"></canvas>
+
+      <!-- Zoom controls -->
+      <div class="mc">
+        <button class="mcb" onclick="zoom(1.2)" title="Zoom in">+</button>
+        <button class="mcb" onclick="zoom(.8)"  title="Zoom out">−</button>
+        <button class="mcb" onclick="resetView()" title="Reset view">⌂</button>
+      </div>
+
+      <!-- Pan/zoom hint -->
+      <div class="map-info">SCROLL · ZOOM &nbsp;|&nbsp; DRAG · PAN</div>
+
+      <!-- Node legend -->
+      <div class="map-leg">
+        <div class="leg-t">Node Types</div>
+        <div class="leg-items">
+          <div class="leg-item"><div class="leg-dot" style="background:#f97316"></div>City</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#fbbf24"></div>Camp</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#4ade80"></div>Safe Zone</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#22d3ee"></div>Medical</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#a78bfa"></div>Exit</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#fff"></div>Active Route</div>
+        </div>
+      </div>
+
+      <!-- Danger legend -->
+      <div class="dleg">
+        <div class="dleg-t">Road Danger</div>
+        <div class="dleg-rows">
+          <div class="dleg-row"><div class="dleg-line" style="background:#4ade80"></div>Low (≤2)</div>
+          <div class="dleg-row"><div class="dleg-line" style="background:#86efac"></div>Moderate (3)</div>
+          <div class="dleg-row"><div class="dleg-line" style="background:#fbbf24"></div>High (4)</div>
+          <div class="dleg-row"><div class="dleg-line" style="background:#f87171"></div>Severe (5)</div>
+          <div class="dleg-row"><div class="dleg-line" style="background:#dc2626"></div>Critical (6)</div>
+        </div>
+      </div>
+
+      <!-- No route message -->
+      <div id="noRoute"> No valid route found</div>
+
+      <!-- Tooltip -->
+      <div id="tt"></div>
+    </div>
+
+  </div><!-- /.body -->
+</div><!-- /.app -->
+
+<script src="script.js"></script>
 </body>
 </html>
