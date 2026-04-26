@@ -11,3 +11,11 @@ We implemented:
 The application allows users to select a start and destination and computes the best route based on different modes such as safest, fastest, and balanced.
 
 This project demonstrates how algorithms can support decision-making under uncertainty and limited resources.
+
+To run the app, type the following command into the terminal:
+
+python -m http.server 8080 --directory "<path-to-project-folder>"
+
+Then, go to the link http://127.0.0.1:8080/index.html?v=2 in a web browser.
+
+See the link in video/demo-link.txt for a short demonstration.
