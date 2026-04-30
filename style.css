@@ -1,37 +1,65 @@
-/* ── Google Fonts ── */
-/* Imported in index.html via <link> */
-
-/* ── Reset & Variables ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
+  /* background */
   --bg:      #07090f;
   --s1:      #0d1117;
   --s2:      #111827;
   --s3:      #1a2438;
+
+  /* Border colours with transparency */
   --border:  rgba(255, 255, 255, 0.06);
   --border2: rgba(255, 255, 255, 0.11);
-  --accent:  #f97316;
-  --cyan:    #22d3ee;
-  --green:   #4ade80;
-  --yellow:  #fbbf24;
-  --red:     #f87171;
-  --purple:  #a78bfa;
-  --text:    #dde3f0;
-  --muted:   #4b5675;
-  --fh: 'Roboto', sans-serif;
-  --fm: 'Roboto Mono', monospace;
+
+  /* Accent and status colours */
+  --accent: #f97316;   /* orange - used for highlights and the find button */
+  --cyan:   #22d3ee;   /* blue - used for active routes */
+  --green:  #4ade80;   /* green - used for safe zones and start node */
+  --yellow: #fbbf24;   /* yellow - used for camps and high danger */
+  --red:    #f87171;   /* red - used for errors and danger */
+  --purple: #a78bfa;   /* purple - used for the border exit node */
+
+  /* Text colours */
+  --text:  #dde3f0;    /* main text */
+  --muted: #4b5675;    /* secondary/label text */
+
+  /* Font families */
+  --font-main: 'Roboto', sans-serif;
+  --font-mono: 'Roboto Mono', monospace;
+}
+
+
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html, body {
   height: 100%;
-  overflow: hidden;
+  overflow: hidden;        
   background: var(--bg);
   color: var(--text);
-  font-family: var(--fh);
+  font-family: var(--font-main);
 }
 
-/* noise overlay */
+/* Subtle scanline effect layered over the whole page */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.025) 2px,
+    rgba(0, 0, 0, 0.025) 4px
+  );
+  pointer-events: none;   /* doesn't block clicks */
+  z-index: 998;
+}
+
+/* Noise texture layered on top of everything */
 body::after {
   content: '';
   position: fixed;
@@ -40,105 +68,49 @@ body::after {
   background-size: 200px;
   pointer-events: none;
   z-index: 999;
-  opacity: .45;
+  opacity: 0.45;
 }
 
-/* scanlines */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.025) 2px, rgba(0,0,0,.025) 4px);
-  pointer-events: none;
-  z-index: 998;
-}
 
-/* ── App Layout ── */
+
+
+/* Outer wrapper - fills the full viewport */
 .app {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-rows: 56px 1fr;
   height: 100vh;
 }
 
-/* ── Header ── */
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  background: rgba(7, 9, 15, .96);
-  border-bottom: 1px solid var(--border2);
-  backdrop-filter: blur(20px);
-}
-
-.logo { display: flex; align-items: center; gap: 14px; }
-
-.logo-hex {
-  width: 34px;
-  height: 34px;
-  background: var(--accent);
-  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+/* Two-column grid: fixed sidebar + flexible map */
+.body {
   display: grid;
-  place-items: center;
-  font-size: 15px;
-  animation: hexP 3s ease-in-out infinite;
+  grid-template-columns: 300px 1fr;
+  height: 100%;
+  overflow: hidden;
 }
 
-@keyframes hexP {
-  0%, 100% { filter: brightness(1)    drop-shadow(0 0  4px rgba(249,115,22,.4)); }
-  50%       { filter: brightness(1.18) drop-shadow(0 0 14px rgba(249,115,22,.75)); }
-}
 
-.logo-text { font-size: 22px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
-.logo-text em { color: var(--accent); font-style: normal; }
-.logo-sub { font-family: var(--fm); font-size: 9px; color: var(--muted); letter-spacing: 2px; margin-top: 1px; }
 
-.hdr-center { display: flex; align-items: center; gap: 7px; }
-
-.pill-dot {
-  width: 5px;
-  height: 5px;
-  background: var(--green);
-  border-radius: 50%;
-  animation: blink 1.4s ease-in-out infinite;
-}
-
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .15; } }
-
-.pill {
-  font-family: var(--fm);
-  font-size: 9px;
-  letter-spacing: 1.5px;
-  padding: 4px 10px;
-  border-radius: 3px;
-  border: 1px solid;
-  background: rgba(74, 222, 128, .08);
-  border-color: rgba(74, 222, 128, .25);
-  color: var(--green);
-}
-
-.hdr-right { font-family: var(--fm); font-size: 9px; color: var(--muted); letter-spacing: .4px; text-align: right; line-height: 1.8; }
-
-/* ── Body ── */
-.body { display: grid; grid-template-columns: 300px 1fr; overflow: hidden; }
-
-/* ── Sidebar ── */
 .sidebar {
   background: var(--s1);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow-y: auto;         /* allows scrolling if content is too tall */
 }
+
+/* Custom scrollbar styling */
 .sidebar::-webkit-scrollbar { width: 2px; }
 .sidebar::-webkit-scrollbar-thumb { background: var(--border2); }
 
-.sec { padding: 18px 20px; border-bottom: 1px solid var(--border); }
+/* Each section block inside the sidebar */
+.sec {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+}
 
 .sec-lbl {
-  font-family: var(--fm);
+  font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
@@ -148,61 +120,117 @@ header {
   align-items: center;
   gap: 8px;
 }
-.sec-lbl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-/* ── Form Fields ── */
-.field { margin-bottom: 10px; }
-.field:last-child { margin-bottom: 0; }
-.field label { display: block; font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 5px; letter-spacing: .5px; font-family: var(--fm); }
+.sec-lbl::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
 
-.sw { position: relative; }
 
+
+/* Wrapper for each label + input pair */
+.field {
+  margin-bottom: 10px;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+/* Label above the select */
+.field label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 5px;
+  letter-spacing: 0.5px;
+}
+
+/* Wrapper needed to position the custom arrow icon */
+.sw {
+  position: relative;
+}
+
+/* The actual dropdown element */
 select {
   width: 100%;
-  appearance: none;
+  appearance: none;             /* removes the default browser arrow */
   background: var(--s2);
   color: var(--text);
   border: 1px solid var(--border2);
   border-radius: 6px;
   padding: 9px 32px 9px 12px;
-  font-family: var(--fh);
+  font-family: var(--font-main);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: border-color .2s, box-shadow .2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
-select:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(34,211,238,.08); }
 
-.arr { position: absolute; right: 11px; bottom: 9px; color: var(--muted); pointer-events: none; font-size: 12px; font-family: var(--fm); }
+select:focus {
+  outline: none;
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.08);
+}
 
-/* ── Mode Buttons ── */
-.mode-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; }
+/* Custom dropdown arrow (the ▾ character) */
+.arr {
+  position: absolute;
+  right: 11px;
+  bottom: 9px;
+  color: var(--muted);
+  pointer-events: none;   /* so clicks pass through to the select */
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
 
+/* Grid for the three routing mode buttons */
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+/* Individual mode button */
 .mode-btn {
   background: var(--s2);
   border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--muted);
-  padding: 9px 4px 7px;
+  padding: 9px 4px;
   cursor: pointer;
-  font-family: var(--fh);
-  font-size: 11px;
+  font-family: var(--font-main);
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: .5px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  transition: all .18s;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
+  transition: all 0.18s;
 }
-.mode-btn .ico { font-size: 16px; }
-.mode-btn:hover { border-color: var(--cyan); color: var(--text); }
-.mode-btn.active { background: rgba(34,211,238,.07); border-color: var(--cyan); color: var(--cyan); }
 
-/* ── Algorithm Buttons ── */
-.algo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.mode-btn:hover {
+  border-color: var(--cyan);
+  color: var(--text);
+}
 
+/* Active/selected mode button */
+.mode-btn.active {
+  background: rgba(34, 211, 238, 0.07);
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+/* Grid for the two algorithm buttons */
+.algo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+/* Individual algorithm button */
 .algo-btn {
   background: var(--s2);
   border: 1px solid var(--border);
@@ -210,15 +238,24 @@ select:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px r
   color: var(--muted);
   padding: 9px;
   cursor: pointer;
-  font-family: var(--fm);
+  font-family: var(--font-mono);
   font-size: 10px;
   text-align: center;
-  transition: all .18s;
+  transition: all 0.18s;
 }
-.algo-btn:hover { border-color: var(--accent); color: var(--text); }
-.algo-btn.active { background: rgba(249,115,22,.08); border-color: var(--accent); color: var(--accent); }
 
-/* ── Checkboxes ── */
+.algo-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.algo-btn.active {
+  background: rgba(249, 115, 22, 0.08);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Row containing a checkbox and its label text */
 .chk-row {
   display: flex;
   align-items: center;
@@ -227,13 +264,20 @@ select:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px r
   cursor: pointer;
   font-size: 13px;
   color: var(--muted);
-  transition: color .15s;
+  transition: color 0.15s;
   font-weight: 500;
 }
-.chk-row:last-child { margin-bottom: 0; }
-.chk-row:hover { color: var(--text); }
 
-.chk-row input[type=checkbox] {
+.chk-row:last-child {
+  margin-bottom: 0;
+}
+
+.chk-row:hover {
+  color: var(--text);
+}
+
+/* Custom styled checkbox */
+.chk-row input[type="checkbox"] {
   appearance: none;
   width: 15px;
   height: 15px;
@@ -243,14 +287,36 @@ select:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px r
   cursor: pointer;
   position: relative;
   flex-shrink: 0;
-  transition: all .15s;
+  transition: all 0.15s;
 }
-.chk-row input:checked { background: var(--accent); border-color: var(--accent); }
-.chk-row input:checked::after { content: '✓'; position: absolute; top: -2px; left: 2px; font-size: 10px; color: #fff; font-weight: 700; }
 
-/* ── Action Buttons ── */
-.btn-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+.chk-row input[type="checkbox"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
 
+/* Checkmark character shown inside the box when checked */
+.chk-row input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  font-size: 10px;
+  color: #fff;
+  font-weight: 700;
+}
+
+
+
+
+/* Container that puts the two buttons side by side */
+.btn-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+/* Main Find Route button */
 .find-btn {
   width: 100%;
   padding: 13px;
@@ -258,105 +324,341 @@ select:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px r
   color: #fff;
   border: none;
   border-radius: 7px;
-  font-family: var(--fh);
-  font-size: 15px;
+  font-family: var(--font-main);
+  font-size: 14px;
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: all .18s;
+  transition: all 0.18s;
 }
-.find-btn::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,.14), transparent 55%); pointer-events: none; }
-.find-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(249,115,22,.35); }
-.find-btn:active { transform: translateY(0); }
 
+/* Subtle shine overlay on the button */
+.find-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), transparent 55%);
+  pointer-events: none;
+}
+
+.find-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(249, 115, 22, 0.35);
+}
+
+.find-btn:active {
+  transform: translateY(0);
+}
+
+/* Clear route button (the ✕) */
 .clear-btn {
   padding: 13px 14px;
   background: var(--s2);
   color: var(--muted);
   border: 1px solid var(--border2);
   border-radius: 7px;
-  font-family: var(--fm);
+  font-family: var(--font-mono);
   font-size: 13px;
   cursor: pointer;
-  transition: all .18s;
-  white-space: nowrap;
+  transition: all 0.18s;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.clear-btn:hover { border-color: var(--red); color: var(--red); background: rgba(248,113,113,.07); }
-.clear-btn:active { transform: scale(.97); }
 
-/* ── Results Pane ── */
-.results-pane { flex: 1; overflow-y: auto; }
+.clear-btn:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(248, 113, 113, 0.07);
+}
+
+.clear-btn:active {
+  transform: scale(0.97);
+}
+
+
+
+.results-pane {
+  flex: 1;
+  overflow-y: auto;
+}
+
 .results-pane::-webkit-scrollbar { width: 2px; }
 .results-pane::-webkit-scrollbar-thumb { background: var(--border2); }
 
-.empty-state { padding: 28px 20px; text-align: center; color: var(--muted); font-family: var(--fm); font-size: 11px; line-height: 2.1; }
+/* Placeholder text shown before a route is found */
+.empty-state {
+  padding: 28px 20px;
+  text-align: center;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 2.1;
+}
 
-/* ── Result Card ── */
+/* The card that shows after a route is found */
 .rcard {
   margin: 14px 14px 0;
   background: var(--s2);
   border: 1px solid var(--border2);
   border-radius: 8px;
   overflow: hidden;
-  animation: cIn .3s ease;
+  animation: cardSlideIn 0.3s ease;
 }
-@keyframes cIn { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
 
-.rcard-top { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; }
-.r-cost { font-size: 30px; font-weight: 800; color: var(--text); line-height: 1; }
-.r-cost span { font-size: 12px; color: var(--muted); font-family: var(--fm); font-weight: 400; }
-.r-tag { font-family: var(--fm); font-size: 9px; padding: 3px 9px; border-radius: 20px; background: rgba(249,115,22,.1); border: 1px solid rgba(249,115,22,.25); color: var(--accent); }
+/* Slide-in animation for the result card */
+@keyframes cardSlideIn {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-.rstat-row { display: grid; grid-template-columns: repeat(3,1fr); border-bottom: 1px solid var(--border); }
-.rstat { padding: 10px 14px; border-right: 1px solid var(--border); }
-.rstat:last-child { border-right: none; }
-.rstat-l { font-family: var(--fm); font-size: 8px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; }
-.rstat-v { font-size: 18px; font-weight: 800; margin-top: 2px; }
+/* Top section of the result card - cost + algorithm tag */
+.rcard-top {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
 
-.rpath { padding: 14px 16px; }
-.rpath-lbl { font-family: var(--fm); font-size: 8px; letter-spacing: 2px; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; }
+/* The big cost number */
+.r-cost {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
 
-.stop { display: flex; align-items: flex-start; gap: 10px; position: relative; min-height: 26px; }
-.stop-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; position: relative; z-index: 1; }
-.stop-line { position: absolute; left: 4px; top: 12px; width: 1px; height: 100%; background: var(--border2); }
-.stop:last-child .stop-line { display: none; }
-.stop-nm { font-size: 13px; font-weight: 600; padding-bottom: 7px; }
-.ds { background: var(--green);  box-shadow: 0 0 8px rgba(74,222,128,.4); }
-.de { background: var(--accent); box-shadow: 0 0 8px rgba(249,115,22,.4); }
+.r-cost span {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-weight: 400;
+}
+
+/* Small pill showing which algorithm and mode was used */
+.r-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: rgba(249, 115, 22, 0.1);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  color: var(--accent);
+}
+
+/* Three stats in a row: Stops, Visited, Mode */
+.rstat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid var(--border);
+}
+
+.rstat {
+  padding: 10px 14px;
+  border-right: 1px solid var(--border);
+}
+
+.rstat:last-child {
+  border-right: none;
+}
+
+.rstat-l {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.rstat-v {
+  font-size: 18px;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+/* The list of stops along the route */
+.rpath {
+  padding: 14px 16px;
+}
+
+.rpath-lbl {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+/* Each individual stop row */
+.stop {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  position: relative;
+  min-height: 26px;
+}
+
+/* Coloured dot on each stop */
+.stop-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 3px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Vertical connecting line between stops */
+.stop-line {
+  position: absolute;
+  left: 4px;
+  top: 12px;
+  width: 1px;
+  height: 100%;
+  background: var(--border2);
+}
+
+/* Don't draw a line after the last stop */
+.stop:last-child .stop-line {
+  display: none;
+}
+
+.stop-nm {
+  font-size: 13px;
+  font-weight: 600;
+  padding-bottom: 7px;
+}
+
+/* Colour classes for start, middle, and end stops */
+.ds { background: var(--green);  box-shadow: 0 0 8px rgba(74, 222, 128, 0.4); }
+.de { background: var(--accent); box-shadow: 0 0 8px rgba(249, 115, 22, 0.4); }
 .dm { background: var(--cyan); }
 
-.r-err { margin: 14px; padding: 12px 14px; background: rgba(248,113,113,.07); border: 1px solid rgba(248,113,113,.2); border-radius: 7px; color: var(--red); font-size: 13px; font-family: var(--fm); }
+/* Error message shown when no route is found */
+.r-err {
+  margin: 14px;
+  padding: 12px 14px;
+  background: rgba(248, 113, 113, 0.07);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: 7px;
+  color: var(--red);
+  font-size: 13px;
+  font-family: var(--font-mono);
+}
 
-/* ── Comparison Card ── */
-.cmp-card { margin: 10px 14px 14px; padding: 14px 16px; background: var(--s2); border: 1px solid var(--border2); border-radius: 8px; }
-.cmp-lbl { font-family: var(--fm); font-size: 8px; letter-spacing: 2px; color: var(--muted); margin-bottom: 12px; text-transform: uppercase; }
-.cmp-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.cmp-n { font-family: var(--fm); font-size: 10px; color: var(--text); width: 62px; flex-shrink: 0; }
-.cmp-track { flex: 1; height: 5px; background: var(--s3); border-radius: 3px; overflow: hidden; }
-.cmp-bar { height: 100%; border-radius: 3px; transition: width .5s cubic-bezier(.4,0,.2,1); }
-.cb-d { background: var(--accent); }
-.cb-a { background: var(--cyan); }
-.cmp-val { font-family: var(--fm); font-size: 10px; color: var(--muted); width: 34px; text-align: right; }
-.cmp-meta { font-family: var(--fm); font-size: 10px; color: var(--muted); margin-top: 8px; }
-.cmp-meta b { color: var(--text); }
+/* Algorithm comparison card */
+.cmp-card {
+  margin: 10px 14px 14px;
+  padding: 14px 16px;
+  background: var(--s2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+}
 
-/* ── Map Area ── */
-#mapArea { position: relative; overflow: hidden; cursor: grab; }
-#mapArea:active { cursor: grabbing; }
-#mapCanvas { display: block; width: 100%; height: 100%; }
+.cmp-lbl {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
 
-/* ── Map Controls ── */
-.mc { position: absolute; top: 14px; right: 14px; z-index: 10; display: flex; flex-direction: column; gap: 5px; }
+/* Each row in the comparison (one per algorithm) */
+.cmp-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.cmp-n {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text);
+  width: 62px;
+  flex-shrink: 0;
+}
+
+/* The grey track the bar sits in */
+.cmp-track {
+  flex: 1;
+  height: 5px;
+  background: var(--s3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+/* The coloured bar inside the track */
+.cmp-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.cb-d { background: var(--accent); }   /* Dijkstra bar - orange */
+.cb-a { background: var(--cyan); }     /* A* bar - blue */
+
+.cmp-val {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  width: 34px;
+  text-align: right;
+}
+
+.cmp-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.cmp-meta b {
+  color: var(--text);
+}
+
+
+
+#mapArea {
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+}
+
+#mapArea:active {
+  cursor: grabbing;
+}
+
+/* The canvas fills the entire map area */
+#mapCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Zoom buttons container - top right corner */
+.mc {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Individual zoom button */
 .mcb {
   width: 34px;
   height: 34px;
-  background: rgba(13,17,23,.9);
+  background: rgba(13, 17, 23, 0.9);
   border: 1px solid var(--border2);
   border-radius: 6px;
   color: var(--text);
@@ -364,64 +666,127 @@ select:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px r
   cursor: pointer;
   display: grid;
   place-items: center;
-  transition: all .15s;
+  transition: all 0.15s;
   backdrop-filter: blur(8px);
-  font-family: var(--fm);
+  font-family: var(--font-mono);
 }
-.mcb:hover { border-color: var(--cyan); color: var(--cyan); }
 
+.mcb:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+/* Hint text in the top left of the map */
 .map-info {
   position: absolute;
   top: 14px;
   left: 14px;
   z-index: 10;
-  background: rgba(7,9,15,.88);
+  background: rgba(7, 9, 15, 0.88);
   border: 1px solid var(--border);
   border-radius: 7px;
   padding: 8px 13px;
-  font-family: var(--fm);
+  font-family: var(--font-mono);
   font-size: 9px;
   color: var(--muted);
-  letter-spacing: .4px;
+  letter-spacing: 0.4px;
   backdrop-filter: blur(10px);
   line-height: 1.9;
 }
 
-/* ── Map Legend ── */
+
+
+/* Node type legend - bottom left */
 .map-leg {
   position: absolute;
   bottom: 14px;
   left: 14px;
   z-index: 10;
-  background: rgba(7,9,15,.9);
+  background: rgba(7, 9, 15, 0.9);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 12px 14px;
   backdrop-filter: blur(12px);
 }
-.leg-t { font-family: var(--fm); font-size: 8px; letter-spacing: 2px; color: var(--muted); margin-bottom: 9px; text-transform: uppercase; }
-.leg-items { display: flex; flex-wrap: wrap; gap: 7px 13px; }
-.leg-item { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--muted); font-family: var(--fm); }
-.leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-/* ── Danger Legend ── */
+.leg-t {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 9px;
+  text-transform: uppercase;
+}
+
+.leg-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 13px;
+}
+
+.leg-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+
+/* Coloured circle next to each legend label */
+.leg-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Road danger legend - bottom right */
 .dleg {
   position: absolute;
   bottom: 14px;
   right: 14px;
   z-index: 10;
-  background: rgba(7,9,15,.9);
+  background: rgba(7, 9, 15, 0.9);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 12px 14px;
   backdrop-filter: blur(12px);
 }
-.dleg-t { font-family: var(--fm); font-size: 8px; letter-spacing: 2px; color: var(--muted); margin-bottom: 9px; text-transform: uppercase; }
-.dleg-rows { display: flex; flex-direction: column; gap: 5px; }
-.dleg-row { display: flex; align-items: center; gap: 8px; font-size: 10px; color: var(--muted); font-family: var(--fm); }
-.dleg-line { width: 22px; height: 3px; border-radius: 2px; flex-shrink: 0; }
 
-/* ── Tooltip ── */
+.dleg-t {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 9px;
+  text-transform: uppercase;
+}
+
+.dleg-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dleg-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+
+/* Short horizontal line showing the road colour */
+.dleg-line {
+  width: 22px;
+  height: 3px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Tooltip shown when hovering over a node on the map */
 #tt {
   position: fixed;
   z-index: 500;
@@ -429,30 +794,51 @@ select:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px r
   border: 1px solid var(--border2);
   border-radius: 8px;
   padding: 12px 14px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity .15s;
+  pointer-events: none;       /* tooltip doesn't block mouse events */
+  opacity: 0;                 /* hidden by default, shown via JavaScript */
+  transition: opacity 0.15s;
   min-width: 175px;
-  box-shadow: 0 12px 32px rgba(0,0,0,.65);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
 }
-.tt-nm { font-size: 14px; font-weight: 700; margin-bottom: 8px; padding-bottom: 7px; border-bottom: 1px solid var(--border); }
-.tt-row { display: flex; justify-content: space-between; font-family: var(--fm); font-size: 10px; color: var(--muted); margin-top: 4px; gap: 12px; }
-.tt-row b { color: var(--text); font-weight: 600; }
 
-/* ── No Route Message ── */
+.tt-nm {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Each data row inside the tooltip */
+.tt-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 4px;
+  gap: 12px;
+}
+
+.tt-row b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* No-route warning shown on the map canvas */
 #noRoute {
   position: absolute;
   bottom: 14px;
   right: 14px;
   z-index: 10;
-  background: rgba(248,113,113,.1);
-  border: 1px solid rgba(248,113,113,.3);
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
   border-radius: 7px;
   padding: 8px 14px;
-  font-family: var(--fm);
+  font-family: var(--font-mono);
   font-size: 11px;
   color: var(--red);
-  display: none;
+  display: none;         
   align-items: center;
   gap: 8px;
 }
