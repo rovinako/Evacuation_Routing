@@ -1,167 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SafeRoute Evacuation Routing</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SafeRoute - Evacuation Routing</title>
+
+  
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+
+  <!-- Our stylesheet -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<div class="app">
+  <!-- Main app wrapper -->
+  <div class="app">
+    <div class="body">
 
-  <!-- ── HEADER ── -->
-  <header>
-    <div class="logo">
-      <div class="logo-hex">🛡</div>
-      <div>
-        <div class="logo-text">Safe<em>Route</em></div>
-        <div class="logo-sub">Evacuation Routing System</div>
-      </div>
-    </div>
-    <div class="hdr-center">
-      <div class="pill-dot"></div>
-      <div class="pill">SYSTEM ACTIVE</div>
-    </div>
-    <div class="hdr-right">
-      Click node → set start<br>
-      Shift+click → set destination
-    </div>
-  </header>
+      <!-- ===== LEFT SIDEBAR ===== -->
+      <aside class="sidebar">
 
-  <div class="body">
+        <!-- Start and destination dropdowns -->
+       
+        <div class="sec">
+          <div class="sec-lbl">Route Selection</div>
 
-    <!-- ── SIDEBAR ── -->
-    <aside class="sidebar">
+          <div class="field">
+            <label>Start Location</label>
+            <div class="sw">
+              <select id="ss" onchange="redraw()"></select>
+              <span class="arr">▾</span>
+            </div>
+          </div>
 
-      <!-- Route Selection -->
-      <div class="sec">
-        <div class="sec-lbl">Route Selection</div>
-        <div class="field">
-          <label>Start Location</label>
-          <div class="sw">
-            <select id="ss" onchange="redraw()"></select>
-            <span class="arr">▾</span>
+          <div class="field">
+            <label>Destination</label>
+            <div class="sw">
+              <select id="es" onchange="redraw()"></select>
+              <span class="arr">▾</span>
+            </div>
           </div>
         </div>
-        <div class="field">
-          <label>Destination</label>
-          <div class="sw">
-            <select id="es" onchange="redraw()"></select>
-            <span class="arr">▾</span>
+
+        <!-- Routing mode - changes how edge costs are calculated -->
+        <div class="sec">
+          <div class="sec-lbl">Routing Mode</div>
+          <div class="mode-grid">
+            <button class="mode-btn active" onclick="setMode('safest', this)">Safest</button>
+            <button class="mode-btn" onclick="setMode('fastest', this)">Fastest</button>
+            <button class="mode-btn" onclick="setMode('balanced', this)">Balanced</button>
           </div>
         </div>
-      </div>
 
-      <!-- Routing Mode -->
-      <div class="sec">
-        <div class="sec-lbl">Routing Mode</div>
-        <div class="mode-grid">
-          <button class="mode-btn active" onclick="setMode('safest',this)">
-            <span class="ico"></span>Safest
-          </button>
-          <button class="mode-btn" onclick="setMode('fastest',this)">
-            <span class="ico"></span>Fastest
-          </button>
-          <button class="mode-btn" onclick="setMode('balanced',this)">
-            <span class="ico"></span>Balanced
-          </button>
+        <!-- Algorithm selector : Dijkstra or A* -->
+        <div class="sec">
+          <div class="sec-lbl">Algorithm</div>
+          <div class="algo-grid">
+            <button class="algo-btn active" onclick="setAlgo('dijkstra', this)">Dijkstra</button>
+            <button class="algo-btn" onclick="setAlgo('astar', this)">A* Search</button>
+          </div>
         </div>
-      </div>
 
-      <!-- Algorithm -->
-      <div class="sec">
-        <div class="sec-lbl">Algorithm</div>
-        <div class="algo-grid">
-          <button class="algo-btn active" onclick="setAlgo('dijkstra',this)">Dijkstra</button>
-          <button class="algo-btn" onclick="setAlgo('astar',this)">A* Search</button>
+        <!-- Extra display options -->
+        <div class="sec">
+          <div class="sec-lbl">Display Options</div>
+
+          <!-- Removes the Deir al-Balah to Khan Younis road from the graph -->
+          <label class="chk-row">
+            <input type="checkbox" id="chkB" onchange="redraw()" />
+            Show blocked road
+          </label>
+
+          <!-- Runs both algorithms and compares how many nodes each visited -->
+          <label class="chk-row">
+            <input type="checkbox" id="chkC" onchange="maybeCompare()" />
+            Compare algorithms
+          </label>
+
+          <!-- Toggles the cost numbers drawn on each road -->
+          <label class="chk-row">
+            <input type="checkbox" id="chkE" checked onchange="redraw()" />
+            Show edge costs
+          </label>
         </div>
-      </div>
 
-      <!-- Display Options -->
-      <div class="sec">
-        <div class="sec-lbl">Display Options</div>
-        <label class="chk-row">
-          <input type="checkbox" id="chkB" onchange="redraw()">
-          Show blocked road
-        </label>
-        <label class="chk-row">
-          <input type="checkbox" id="chkC" onchange="maybeCompare()">
-          Compare algorithms
-        </label>
-        <label class="chk-row">
-          <input type="checkbox" id="chkE" checked onchange="redraw()">
-          Show edge costs
-        </label>
-      </div>
-
-      <!-- Actions -->
-      <div class="sec">
-        <div class="btn-row">
-          <button class="find-btn" onclick="findRoute()">⟶ &nbsp;Find Route</button>
-          <button class="clear-btn" onclick="clearRoute()" title="Clear route">✕</button>
+        <!-- Find and clear buttons -->
+        <div class="sec">
+          <div class="btn-row">
+            <button class="find-btn" onclick="findRoute()">Find Route</button>
+            <button class="clear-btn" onclick="clearRoute()" title="Clear route">✕</button>
+          </div>
         </div>
-      </div>
 
-      <!-- Results -->
-      <div class="results-pane" id="results">
-        <div class="empty-state">
-          Select start + destination<br>then press Find Route
+        <!-- Results panel - filled in by JavaScript after a route is found -->
+        <div class="results-pane" id="results">
+          <div class="empty-state">
+            Select start + destination<br />then press Find Route
+          </div>
         </div>
-      </div>
 
-    </aside>
+      </aside>
+    
 
-    <!-- ── MAP ── -->
-    <div id="mapArea">
-      <canvas id="mapCanvas"></canvas>
 
-      <!-- Zoom controls -->
-      <div class="mc">
-        <button class="mcb" onclick="zoom(1.2)" title="Zoom in">+</button>
-        <button class="mcb" onclick="zoom(.8)"  title="Zoom out">−</button>
-        <button class="mcb" onclick="resetView()" title="Reset view">⌂</button>
-      </div>
+      <!-- ===== MAP AREA ===== -->
+      <div id="mapArea">
 
-      <!-- Pan/zoom hint -->
-      <div class="map-info">SCROLL · ZOOM &nbsp;|&nbsp; DRAG · PAN</div>
+ 
+        <canvas id="mapCanvas"></canvas>
 
-      <!-- Node legend -->
-      <div class="map-leg">
-        <div class="leg-t">Node Types</div>
-        <div class="leg-items">
-          <div class="leg-item"><div class="leg-dot" style="background:#f97316"></div>City</div>
-          <div class="leg-item"><div class="leg-dot" style="background:#fbbf24"></div>Camp</div>
-          <div class="leg-item"><div class="leg-dot" style="background:#4ade80"></div>Safe Zone</div>
-          <div class="leg-item"><div class="leg-dot" style="background:#22d3ee"></div>Medical</div>
-          <div class="leg-item"><div class="leg-dot" style="background:#a78bfa"></div>Exit</div>
-          <div class="leg-item"><div class="leg-dot" style="background:#fff"></div>Active Route</div>
+        <!-- Zoom and reset buttons in the top right -->
+        <div class="mc">
+          <button class="mcb" onclick="zoom(1.2)" title="Zoom in">+</button>
+          <button class="mcb" onclick="zoom(0.8)" title="Zoom out">−</button>
+          <button class="mcb" onclick="resetView()" title="Reset view">⌂</button>
         </div>
-      </div>
 
-      <!-- Danger legend -->
-      <div class="dleg">
-        <div class="dleg-t">Road Danger</div>
-        <div class="dleg-rows">
-          <div class="dleg-row"><div class="dleg-line" style="background:#4ade80"></div>Low (≤2)</div>
-          <div class="dleg-row"><div class="dleg-line" style="background:#86efac"></div>Moderate (3)</div>
-          <div class="dleg-row"><div class="dleg-line" style="background:#fbbf24"></div>High (4)</div>
-          <div class="dleg-row"><div class="dleg-line" style="background:#f87171"></div>Severe (5)</div>
-          <div class="dleg-row"><div class="dleg-line" style="background:#dc2626"></div>Critical (6)</div>
+    
+
+        <!-- Node type legend in the bottom left -->
+        <div class="map-leg">
+          <div class="leg-t">Node Types</div>
+          <div class="leg-items">
+            <div class="leg-item"><div class="leg-dot" style="background: #f97316;"></div>City</div>
+            <div class="leg-item"><div class="leg-dot" style="background: #fbbf24;"></div>Camp</div>
+            <div class="leg-item"><div class="leg-dot" style="background: #4ade80;"></div>Safe Zone</div>
+            <div class="leg-item"><div class="leg-dot" style="background: #22d3ee;"></div>Medical</div>
+            <div class="leg-item"><div class="leg-dot" style="background: #a78bfa;"></div>Exit</div>
+            <div class="leg-item"><div class="leg-dot" style="background: #ffffff;"></div>Active Route</div>
+          </div>
         </div>
+
+        <!-- Road danger level legend in the bottom right -->
+        <div class="dleg">
+          <div class="dleg-t">Road Danger</div>
+          <div class="dleg-rows">
+            <div class="dleg-row"><div class="dleg-line" style="background: #4ade80;"></div>Low (≤2)</div>
+            <div class="dleg-row"><div class="dleg-line" style="background: #86efac;"></div>Moderate (3)</div>
+            <div class="dleg-row"><div class="dleg-line" style="background: #fbbf24;"></div>High (4)</div>
+            <div class="dleg-row"><div class="dleg-line" style="background: #f87171;"></div>Severe (5)</div>
+            <div class="dleg-row"><div class="dleg-line" style="background: #dc2626;"></div>Critical (6)</div>
+          </div>
+        </div>
+
+        <!-- Shown when no route can be found -->
+        <div id="noRoute">No valid route found</div>
+
+        <!-- Tooltip that appears when hovering over a node -->
+        <div id="tt"></div>
+
       </div>
 
-      <!-- No route message -->
-      <div id="noRoute"> No valid route found</div>
 
-      <!-- Tooltip -->
-      <div id="tt"></div>
     </div>
+  </div>
 
-  </div><!-- /.body -->
-</div><!-- /.app -->
 
-<script src="script.js"></script>
+  <script src="script.js"></script>
+
 </body>
 </html>
